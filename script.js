@@ -17,12 +17,14 @@ function addMessage(sender, message) {
 }
 
 function getResponse(input) {
-    // Simple mock AI response
-    const responses = {
-        "hello": "Hi there!",
-        "how are you?": "I'm a computer program, so I don't have feelings, but thanks for asking!"
-    };
-
-    const response = responses[input.toLowerCase()] || "Sorry, I don't understand that.";
-    setTimeout(() => addMessage('bot', response), 500);
+    fetch('/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: input })
+    })
+    .then(response => response.json())
+    .then(data => addMessage('bot', data.response))
+    .catch(error => console.error('Error:', error));
 }
